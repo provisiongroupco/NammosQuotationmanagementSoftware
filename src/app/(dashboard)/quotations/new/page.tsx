@@ -32,7 +32,7 @@ export default function NewQuotationPage() {
   const [items, setItems] = useState<QuotationItem[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
   const [currentAnnotations, setCurrentAnnotations] = useState<Annotation[]>([]);
-  const [currentQuantity, setCurrentQuantity] = useState(1);
+  const [currentQuantity, setCurrentQuantity] = useState(0);
   const [showProductSelector, setShowProductSelector] = useState(false);
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function NewQuotationPage() {
   };
 
   const handleAddItem = () => {
-    if (!selectedProduct) return;
+    if (!selectedProduct || currentQuantity < 1) return;
 
     const unitPrice = calculateItemPrice(selectedProduct, currentAnnotations);
 
@@ -119,7 +119,7 @@ export default function NewQuotationPage() {
 
     setSelectedProduct(null);
     setCurrentAnnotations([]);
-    setCurrentQuantity(1);
+    setCurrentQuantity(0);
   };
 
   const handleEditItem = (item: QuotationItem) => {
@@ -399,7 +399,7 @@ export default function NewQuotationPage() {
                   onClick={() => {
                     setSelectedProduct(null);
                     setCurrentAnnotations([]);
-                    setCurrentQuantity(1);
+                    setCurrentQuantity(0);
                     setEditingItemId(null);
                   }}
                 >
@@ -447,7 +447,7 @@ export default function NewQuotationPage() {
                           }
                         }}
                         onBlur={() => {
-                          if (currentQuantity < 1) setCurrentQuantity(1);
+                          // Keep empty if user clears it
                         }}
                         className="w-20 bg-nammos-dark border-border text-center text-lg font-medium"
                       />
@@ -473,7 +473,7 @@ export default function NewQuotationPage() {
                     </p>
                   </div>
                 </div>
-                <Button onClick={handleAddItem} className="w-full gap-2">
+                <Button onClick={handleAddItem} disabled={currentQuantity < 1} className="w-full gap-2">
                   {editingItemId ? (
                     <>
                       <Pencil className="h-4 w-4" />

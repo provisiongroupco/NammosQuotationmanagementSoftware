@@ -1,0 +1,15 @@
+{
+    "keep": {
+        "days": true,
+        "amount": 14
+    },
+    "auditLog": "/Users/yazan/Documents/ProVisionGroup/Pro Vision Solutions/Nammos/App/logs/.8dcec9fadf6be19899cd04bdac401a466c0fe83e-audit.json",
+    "files": [
+        {
+            "date": 1764283761626,
+            "name": "/Users/yazan/Documents/ProVisionGroup/Pro Vision Solutions/Nammos/App/logs/mcp-puppeteer-2025-11-28.log",
+            "hash": "727b432c60d0879118834f88d0932eb2bfa33e7c1e944bdb3837afaa8a9fc04d"
+        }
+    ],
+    "hashType": "sha256"
+}

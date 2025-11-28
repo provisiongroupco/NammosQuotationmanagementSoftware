@@ -1,0 +1,40 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npx shadcn@latest init:*)",
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(npm run build:*)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_yOeddC/**)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_wEQobp/**)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_yidtUe/**)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_jCfTFi/**)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_6PaLTi/**)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_NZKtOD/**)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_KnbYBR/**)",
+      "mcp__supabase__list_tables",
+      "Bash(npm run lint)",
+      "Bash(npx eslint:*)",
+      "Bash(npm run dev:*)",
+      "Bash(lsof:*)",
+      "Bash(npx next dev:*)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_k1ZOJY/**)",
+      "WebFetch(domain:nanobanana.ai)",
+      "WebFetch(domain:imgeditor.co)",
+      "WebFetch(domain:replicate.com)",
+      "WebSearch",
+      "WebFetch(domain:gist.github.com)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_Fj3w2a/**)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_YkeOoI/**)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_nhO2mp/**)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_VcgQZ4/**)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_qFh1hr/**)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_fzi0Rd/**)",
+      "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_ev8ZUY/**)",
+      "Bash(git remote set-url:*)",
+      "Bash(git add:*)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}

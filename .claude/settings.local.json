@@ -32,7 +32,8 @@
       "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_fzi0Rd/**)",
       "Read(//var/folders/db/rkpn7qfd1pddjwbmygv63_lc0000gn/T/TemporaryItems/NSIRD_screencaptureui_ev8ZUY/**)",
       "Bash(git remote set-url:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git push:*)"
     ],
     "deny": [],
     "ask": []

@@ -121,10 +121,15 @@ export default function MaterialSelectorDialog({
           ) : (
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-4">
               {filteredMaterials.map((material) => (
-                <div
+                <button
+                  type="button"
                   key={material.id}
                   onClick={() => setSelectedMaterial(material)}
-                  className={`group cursor-pointer rounded-lg border-2 transition-all overflow-hidden ${
+                  onTouchEnd={(e) => {
+                    e.preventDefault();
+                    setSelectedMaterial(material);
+                  }}
+                  className={`group cursor-pointer rounded-lg border-2 transition-all overflow-hidden text-left w-full ${
                     selectedMaterial?.id === material.id
                       ? 'border-primary bg-primary/10 ring-2 ring-primary/30'
                       : 'border-border hover:border-primary hover:bg-primary/5'
@@ -187,7 +192,7 @@ export default function MaterialSelectorDialog({
                       </Badge>
                     </div>
                   </div>
-                </div>
+                </button>
               ))}
             </div>
           )}

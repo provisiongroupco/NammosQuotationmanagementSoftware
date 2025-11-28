@@ -417,16 +417,42 @@ export default function NewQuotationPage() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-4">
                     <Label htmlFor="quantity">Quantity</Label>
-                    <Input
-                      id="quantity"
-                      type="number"
-                      min={1}
-                      value={currentQuantity}
-                      onChange={(e) =>
-                        setCurrentQuantity(parseInt(e.target.value) || 1)
-                      }
-                      className="w-20 bg-nammos-dark border-border"
-                    />
+                    <div className="flex items-center gap-1">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-10 w-10 text-lg font-bold"
+                        onClick={() => setCurrentQuantity(Math.max(1, currentQuantity - 1))}
+                        disabled={currentQuantity <= 1}
+                      >
+                        −
+                      </Button>
+                      <Input
+                        id="quantity"
+                        type="text"
+                        inputMode="numeric"
+                        pattern="[0-9]*"
+                        value={currentQuantity}
+                        onChange={(e) => {
+                          const val = parseInt(e.target.value) || 0;
+                          if (val >= 0) setCurrentQuantity(val || 1);
+                        }}
+                        onBlur={() => {
+                          if (currentQuantity < 1) setCurrentQuantity(1);
+                        }}
+                        className="w-16 bg-nammos-dark border-border text-center text-lg font-medium"
+                      />
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="icon"
+                        className="h-10 w-10 text-lg font-bold"
+                        onClick={() => setCurrentQuantity(currentQuantity + 1)}
+                      >
+                        +
+                      </Button>
+                    </div>
                   </div>
                   <div className="text-right">
                     <p className="text-sm text-nammos-muted">Unit Price</p>

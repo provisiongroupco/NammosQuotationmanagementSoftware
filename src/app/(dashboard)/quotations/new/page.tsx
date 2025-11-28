@@ -433,15 +433,22 @@ export default function NewQuotationPage() {
                         type="text"
                         inputMode="numeric"
                         pattern="[0-9]*"
-                        value={currentQuantity}
+                        value={currentQuantity === 0 ? '' : currentQuantity}
                         onChange={(e) => {
-                          const val = parseInt(e.target.value) || 0;
-                          if (val >= 0) setCurrentQuantity(val || 1);
+                          const val = e.target.value;
+                          if (val === '') {
+                            setCurrentQuantity(0);
+                          } else {
+                            const num = parseInt(val);
+                            if (!isNaN(num) && num >= 0) {
+                              setCurrentQuantity(num);
+                            }
+                          }
                         }}
                         onBlur={() => {
                           if (currentQuantity < 1) setCurrentQuantity(1);
                         }}
-                        className="w-16 bg-nammos-dark border-border text-center text-lg font-medium"
+                        className="w-20 bg-nammos-dark border-border text-center text-lg font-medium"
                       />
                       <Button
                         type="button"

@@ -42,7 +42,7 @@ function transformMaterial(dbMaterial: DbMaterial): Material {
     price_uplift: dbMaterial.price_uplift,
     supplier: dbMaterial.supplier || undefined,
     availability: dbMaterial.availability,
-    tags: dbMaterial.tags || [],
+    tags: (dbMaterial as DbMaterial & { tags?: string[] }).tags || [],
     created_at: dbMaterial.created_at,
     updated_at: dbMaterial.updated_at,
   };
@@ -70,10 +70,10 @@ export async function getProducts(): Promise<Product[]> {
     return [];
   }
 
-  return products.map((product) =>
+  return products.map((product: DbProduct) =>
     transformProduct(
       product,
-      parts.filter((part) => part.product_id === product.id)
+      parts.filter((part: DbAnnotatablePart) => part.product_id === product.id)
     )
   );
 }
@@ -195,7 +195,7 @@ export async function getAllTags(): Promise<string[]> {
   }
 
   const allTags = new Set<string>();
-  data.forEach((row) => {
+  data.forEach((row: { tags: string[] | null }) => {
     if (row.tags) {
       row.tags.forEach((tag: string) => allTags.add(tag));
     }
@@ -315,16 +315,16 @@ export async function getClients(): Promise<Client[]> {
     return [];
   }
 
-  return data.map((client) => ({
-    id: client.id,
-    name: client.name,
-    email: client.email || undefined,
-    phone: client.phone || undefined,
-    company: client.company || undefined,
-    address: client.address || undefined,
-    notes: client.notes || undefined,
-    created_at: client.created_at,
-    updated_at: client.updated_at,
+  return data.map((client: Record<string, unknown>) => ({
+    id: client.id as string,
+    name: client.name as string,
+    email: (client.email as string) || undefined,
+    phone: (client.phone as string) || undefined,
+    company: (client.company as string) || undefined,
+    address: (client.address as string) || undefined,
+    notes: (client.notes as string) || undefined,
+    created_at: client.created_at as string,
+    updated_at: client.updated_at as string,
   }));
 }
 
@@ -456,23 +456,23 @@ export async function getQuotations(): Promise<(Quotation & { items_count: numbe
     return [];
   }
 
-  return quotations.map((q) => ({
-    id: q.id,
-    reference_number: q.reference_number,
-    client_id: q.client_id || undefined,
-    customer_name: q.customer_name,
-    customer_email: q.customer_email || undefined,
-    customer_phone: q.customer_phone || undefined,
-    status: q.status,
+  return quotations.map((q: Record<string, unknown>) => ({
+    id: q.id as string,
+    reference_number: q.reference_number as string,
+    client_id: (q.client_id as string) || undefined,
+    customer_name: q.customer_name as string,
+    customer_email: (q.customer_email as string) || undefined,
+    customer_phone: (q.customer_phone as string) || undefined,
+    status: q.status as Quotation['status'],
     items: [],
     items_count: (q.quotation_items as { count: number }[])?.[0]?.count || 0,
-    subtotal: q.subtotal,
-    vat_amount: q.vat_amount,
-    total_amount: q.total_amount,
-    total_cbm: q.total_cbm || 0,
-    notes: q.notes || undefined,
-    created_at: q.created_at,
-    updated_at: q.updated_at,
+    subtotal: q.subtotal as number,
+    vat_amount: q.vat_amount as number,
+    total_amount: q.total_amount as number,
+    total_cbm: (q.total_cbm as number) || 0,
+    notes: (q.notes as string) || undefined,
+    created_at: q.created_at as string,
+    updated_at: q.updated_at as string,
   }));
 }
 
@@ -503,16 +503,16 @@ export async function getQuotationById(id: string): Promise<Quotation | null> {
   const { data: annotations, error: annotationsError } = await supabase
     .from('annotations')
     .select('*')
-    .in('quotation_item_id', items?.map((i) => i.id) || []);
+    .in('quotation_item_id', items?.map((i: Record<string, unknown>) => i.id as string) || []);
 
   if (annotationsError) {
     console.error('Error fetching annotations:', annotationsError);
   }
 
-  const quotationItems: QuotationItem[] = (items || []).map((item) => {
+  const quotationItems: QuotationItem[] = (items || []).map((item: Record<string, unknown>) => {
     const itemAnnotations = (annotations || [])
-      .filter((a) => a.quotation_item_id === item.id)
-      .map((a) => ({
+      .filter((a: Record<string, unknown>) => a.quotation_item_id === item.id)
+      .map((a: Record<string, unknown>) => ({
         id: a.id,
         part_id: a.part_id,
         part_name: a.part_name,
@@ -691,7 +691,7 @@ export async function updateQuotation(
     await supabase
       .from('annotations')
       .delete()
-      .in('quotation_item_id', existingItems.map((i) => i.id));
+      .in('quotation_item_id', existingItems.map((i: { id: string }) => i.id));
   }
 
   await supabase.from('quotation_items').delete().eq('quotation_id', id);
@@ -806,6 +806,27 @@ export interface AnalyticsData {
   topCustomers: { name: string; quotations: number; revenue: number }[];
 }
 
+type AnalyticsQuotation = {
+  id: string;
+  status: string;
+  total_amount: number;
+  total_cbm: number | null;
+  created_at: string;
+  customer_name: string;
+};
+
+type AnalyticsItem = {
+  id: string;
+  quotation_id: string;
+  quantity: number;
+  product_snapshot: { name?: string } | null;
+};
+
+type AnalyticsAnnotation = {
+  id: string;
+  material_snapshot: { name?: string; type?: string } | null;
+};
+
 export async function getAnalytics(): Promise<AnalyticsData | null> {
   const supabase = createSupabaseClient();
 
@@ -835,11 +856,15 @@ export async function getAnalytics(): Promise<AnalyticsData | null> {
       console.error('Error fetching annotations for analytics:', annotationsError);
     }
 
-    const approvedQuotations = quotations?.filter((q) => q.status === 'approved') || [];
+    const typedQuotations = (quotations || []) as AnalyticsQuotation[];
+    const typedItems = (items || []) as AnalyticsItem[];
+    const typedAnnotations = (annotations || []) as AnalyticsAnnotation[];
+
+    const approvedQuotations = typedQuotations.filter((q) => q.status === 'approved');
     const totalRevenue = approvedQuotations.reduce((sum, q) => sum + q.total_amount, 0);
-    const totalQuotations = quotations?.length || 0;
-    const pendingQuotations = quotations?.filter((q) => q.status === 'draft').length || 0;
-    const rejectedQuotations = quotations?.filter((q) => q.status === 'rejected').length || 0;
+    const totalQuotations = typedQuotations.length;
+    const pendingQuotations = typedQuotations.filter((q) => q.status === 'draft').length;
+    const rejectedQuotations = typedQuotations.filter((q) => q.status === 'rejected').length;
 
     const now = new Date();
     const thisMonth = now.getMonth();
@@ -847,15 +872,15 @@ export async function getAnalytics(): Promise<AnalyticsData | null> {
     const lastMonth = thisMonth === 0 ? 11 : thisMonth - 1;
     const lastMonthYear = thisMonth === 0 ? thisYear - 1 : thisYear;
 
-    const thisMonthQuotations = quotations?.filter((q) => {
+    const thisMonthQuotations = typedQuotations.filter((q) => {
       const d = new Date(q.created_at);
       return d.getMonth() === thisMonth && d.getFullYear() === thisYear;
-    }) || [];
+    });
 
-    const lastMonthQuotations = quotations?.filter((q) => {
+    const lastMonthQuotations = typedQuotations.filter((q) => {
       const d = new Date(q.created_at);
       return d.getMonth() === lastMonth && d.getFullYear() === lastMonthYear;
-    }) || [];
+    });
 
     const thisMonthRevenue = thisMonthQuotations
       .filter((q) => q.status === 'approved')
@@ -891,9 +916,9 @@ export async function getAnalytics(): Promise<AnalyticsData | null> {
       ? ((thisMonthAOV - lastMonthAOV) / lastMonthAOV) * 100
       : thisMonthAOV > 0 ? 100 : 0;
 
-    const totalCBM = quotations?.reduce((sum, q) => sum + (q.total_cbm || 0), 0) || 0;
+    const totalCBM = typedQuotations.reduce((sum, q) => sum + (q.total_cbm || 0), 0);
     const avgCBMPerQuotation = totalQuotations > 0 ? totalCBM / totalQuotations : 0;
-    const totalItems = items?.length || 0;
+    const totalItems = typedItems.length;
 
     const sentThisMonth = thisMonthQuotations.filter((q) => q.status === 'sent').length;
     const approvedThisMonth = thisMonthApproved;
@@ -909,7 +934,7 @@ export async function getAnalytics(): Promise<AnalyticsData | null> {
       const month = d.getMonth();
       const year = d.getFullYear();
 
-      const monthRevenue = (quotations || [])
+      const monthRevenue = typedQuotations
         .filter((q) => {
           const qd = new Date(q.created_at);
           return qd.getMonth() === month && qd.getFullYear() === year && q.status === 'approved';
@@ -920,16 +945,15 @@ export async function getAnalytics(): Promise<AnalyticsData | null> {
     }
 
     const statusBreakdown = [
-      { status: 'draft', count: quotations?.filter((q) => q.status === 'draft').length || 0 },
-      { status: 'sent', count: quotations?.filter((q) => q.status === 'sent').length || 0 },
+      { status: 'draft', count: typedQuotations.filter((q) => q.status === 'draft').length },
+      { status: 'sent', count: typedQuotations.filter((q) => q.status === 'sent').length },
       { status: 'approved', count: approvedQuotations.length },
       { status: 'rejected', count: rejectedQuotations },
     ];
 
     const productCounts: Record<string, number> = {};
-    (items || []).forEach((item) => {
-      const snapshot = item.product_snapshot as { name?: string } | null;
-      const name = snapshot?.name || 'Unknown';
+    typedItems.forEach((item) => {
+      const name = item.product_snapshot?.name || 'Unknown';
       productCounts[name] = (productCounts[name] || 0) + item.quantity;
     });
 
@@ -939,10 +963,9 @@ export async function getAnalytics(): Promise<AnalyticsData | null> {
       .slice(0, 5);
 
     const materialCounts: Record<string, { type: string; count: number }> = {};
-    (annotations || []).forEach((ann) => {
-      const snapshot = ann.material_snapshot as { name?: string; type?: string } | null;
-      const name = snapshot?.name || 'Unknown';
-      const type = snapshot?.type || 'fabric';
+    typedAnnotations.forEach((ann) => {
+      const name = ann.material_snapshot?.name || 'Unknown';
+      const type = ann.material_snapshot?.type || 'fabric';
       if (!materialCounts[name]) {
         materialCounts[name] = { type, count: 0 };
       }
@@ -955,7 +978,7 @@ export async function getAnalytics(): Promise<AnalyticsData | null> {
       .slice(0, 5);
 
     const customerStats: Record<string, { quotations: number; revenue: number }> = {};
-    (quotations || []).forEach((q) => {
+    typedQuotations.forEach((q) => {
       const name = q.customer_name;
       if (!customerStats[name]) {
         customerStats[name] = { quotations: 0, revenue: 0 };

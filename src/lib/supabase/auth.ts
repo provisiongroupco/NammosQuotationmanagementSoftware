@@ -77,10 +77,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   const supabase = createClient();
 
   try {
-    const { data: { user }, error: userError } = await withTimeout(
-      supabase.auth.getUser(),
-      5000
-    );
+    const { data: { user }, error: userError } = await supabase.auth.getUser();
 
     if (userError || !user) {
       return null;
@@ -155,7 +152,7 @@ export async function getAllUsers(): Promise<UserProfile[]> {
     return [];
   }
 
-  return data.map((user) => ({
+  return data.map((user: Record<string, unknown>) => ({
     id: user.id,
     email: user.email,
     full_name: user.full_name,

@@ -121,6 +121,7 @@ export default function AddMaterialDialog({
         supplier: formData.supplier || undefined,
         swatch_image_url: swatchUrl,
         availability: formData.availability,
+        tags: [],
       });
 
       if (newMaterial) {

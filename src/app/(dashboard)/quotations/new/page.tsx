@@ -434,6 +434,7 @@ export default function NewQuotationPage() {
                         inputMode="numeric"
                         pattern="[0-9]*"
                         value={currentQuantity === 0 ? '' : currentQuantity}
+                        onFocus={(e) => e.target.select()}
                         onChange={(e) => {
                           const val = e.target.value;
                           if (val === '') {

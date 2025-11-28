@@ -119,7 +119,7 @@ export default function MaterialSelectorDialog({
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-4">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-4 pb-4">
               {filteredMaterials.map((material) => (
                 <button
                   type="button"
@@ -129,10 +129,10 @@ export default function MaterialSelectorDialog({
                     e.preventDefault();
                     setSelectedMaterial(material);
                   }}
-                  className={`group cursor-pointer rounded-lg border-2 transition-all overflow-hidden text-left w-full ${
+                  className={`group cursor-pointer rounded-lg border-2 transition-all overflow-hidden text-left w-full min-h-[120px] ${
                     selectedMaterial?.id === material.id
                       ? 'border-primary bg-primary/10 ring-2 ring-primary/30'
-                      : 'border-border hover:border-primary hover:bg-primary/5'
+                      : 'border-border hover:border-primary hover:bg-primary/5 active:bg-primary/10'
                   }`}
                 >
                   {/* Large Material Image */}
@@ -210,7 +210,7 @@ export default function MaterialSelectorDialog({
               <Button
                 onClick={handleConfirm}
                 disabled={!selectedMaterial}
-                className="min-w-[100px]"
+                className="min-w-[140px] h-12 text-base px-6"
               >
                 {selectedMaterial ? 'Select Material' : 'Select a Material'}
               </Button>

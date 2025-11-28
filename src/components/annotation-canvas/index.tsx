@@ -299,6 +299,7 @@ export default function AnnotationCanvas({
           onMouseLeave={handleDragEnd}
           onTouchMove={handleDragMove}
           onTouchEnd={handleDragEnd}
+          style={{ touchAction: draggingId ? 'none' : 'auto' }}
           className={`relative aspect-[4/3] min-h-[280px] max-h-[400px] bg-nammos-dark rounded-lg overflow-hidden ${
             isAddingPoint ? 'cursor-crosshair ring-2 ring-primary' : draggingId ? 'cursor-grabbing' : 'cursor-default'
           }`}
@@ -326,7 +327,7 @@ export default function AnnotationCanvas({
                     ? 'z-20 scale-110'
                     : 'z-10 cursor-pointer'
               }`}
-              style={{ left: `${annotation.x}%`, top: `${annotation.y}%` }}
+              style={{ left: `${annotation.x}%`, top: `${annotation.y}%`, touchAction: 'none' }}
               onClick={(e) => {
                 if (draggingId) return;
                 e.stopPropagation();
